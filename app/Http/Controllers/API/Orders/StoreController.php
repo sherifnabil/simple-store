@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\API\Orders;
 
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Http\Requests\API\OrderRequest;
-use App\Models\Product;
+use App\Notifications\NewOrderNotification;
 
 class StoreController extends Controller
 {
@@ -19,6 +20,8 @@ class StoreController extends Controller
         $product = Product::find($request->product_id);
         $product->stock -= 1;
         $product->save();
+
+        $order->client->notify(new NewOrderNotification($product));
 
         return new JsonResponse(
             data: new OrderResource($order->load(['client', 'product'])),

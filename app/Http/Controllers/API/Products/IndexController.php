@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\Products;
 
 use App\Models\Product;
@@ -11,7 +13,7 @@ use Illuminate\Http\Response;
 
 class IndexController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse
     {
         $products = Product::with('categories')
         ->active()
